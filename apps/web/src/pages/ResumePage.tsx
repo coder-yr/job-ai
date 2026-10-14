@@ -55,6 +55,8 @@ export function ResumePage() {
       setSelectedResumeId(res.data.id);
     } catch (err) {
       alert(`Upload failed: ${err instanceof Error ? err.message : String(err)}`);
+    } finally {
+      e.target.value = "";
     }
   };
 
