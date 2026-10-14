@@ -1,0 +1,21 @@
+flowchart TB
+  subgraph WIN["Windows 10 / 11"]
+    direction TB
+    subgraph SVC["Background processes"]
+      OLS["ollama serve<br/>tray app, auto-start"]
+      PGS["PostgreSQL 16/17<br/>Windows service"]
+    end
+    subgraph APP["JobPilot (npm run start)"]
+      A1["api :4000"]
+      W1["worker"]
+      V1["web :5173 dev<br/>or static from api"]
+    end
+    TS["Task Scheduler<br/>'At log on' to start JobPilot"]
+    DD[("%LOCALAPPDATA%\\JobPilot<br/>resumes, PDFs, backups")]
+  end
+  TS --> APP
+  A1 --> PGS
+  W1 --> PGS
+  A1 --> OLS
+  W1 --> OLS
+  A1 --> DD

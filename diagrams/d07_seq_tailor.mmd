@@ -1,0 +1,28 @@
+sequenceDiagram
+  autonumber
+  actor U as You
+  participant UI as Web UI
+  participant API as API
+  participant L as Ollama
+  participant G as Truthfulness guard
+  participant P as Playwright (PDF)
+  U->>UI: Click "Tailor for this job"
+  UI->>API: POST /jobs/:id/documents
+  API->>L: tailor prompt (profile bullets with IDs + JD)
+  L-->>API: TailoredResume JSON
+  API->>G: verify skills, numbers, technologies, bullet IDs
+  alt violations found
+    G-->>API: report
+    API->>L: regenerate with violation list
+    L-->>API: corrected JSON
+    API->>G: verify again
+  end
+  G-->>API: ok + guardReport
+  API->>L: cover letter prompt
+  L-->>API: CoverLetter JSON
+  API-->>UI: draft + diff vs base resume
+  U->>UI: Edit, then Approve
+  UI->>API: POST /documents/:id/approve
+  API->>P: HTML to PDF
+  P-->>API: file path
+  API-->>UI: download links

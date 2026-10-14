@@ -1,0 +1,49 @@
+{
+  "name": "jobpilot",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -n api,worker,web -c blue,green,magenta \"npm run dev -w @jobpilot/api\" \"npm run dev -w @jobpilot/worker\" \"npm run dev -w @jobpilot/web\"",
+    "start": "concurrently -n api,worker \"npm run start -w @jobpilot/api\" \"npm run start -w @jobpilot/worker\"",
+    "typecheck": "tsc -p . --noEmit",
+    "test": "vitest run",
+    "test:int": "vitest run --dir tests/integration",
+    "test:e2e": "playwright test",
+    "eval:parse": "tsx scripts/evalParse.ts",
+    "eval:rank": "tsx scripts/evalRank.ts",
+    "check:env": "node scripts/check-env.mjs",
+    "verify": "npm run typecheck && npm test",
+    "db:generate": "npm run generate -w @jobpilot/db",
+    "db:migrate": "npm run migrate -w @jobpilot/db --",
+    "db:deploy": "npm run deploy -w @jobpilot/db",
+    "db:seed": "npm run seed -w @jobpilot/db",
+    "db:studio": "npm run studio -w @jobpilot/db"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.0",
+    "@types/html-to-text": "9.0.4",
+    "@types/mailparser": "3.9.0",
+    "@types/node": "26.6.5",
+    "@types/node-notifier": "8.0.5",
+    "@types/pg": "8.23.1",
+    "concurrently": "10.0.6",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3",
+    "vitest": "5.0.3"
+  },
+  "dependencies": {
+    "@types/diff": "7.0.2",
+    "diff": "9.0.0"
+  },
+  "optionalDependencies": {
+    "@rolldown/binding-win32-x64-msvc": "1.2.13"
+  }
+}

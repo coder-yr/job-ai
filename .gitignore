@@ -1,0 +1,54 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Environment variables & secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# Build and generated files
+dist/
+build/
+generated/
+.turbo/
+*.tsbuildinfo
+
+# Local data & storage (Blueprint Phase 8: Never commit candidate PDFs, SQLite or local files)
+data/
+!data/.gitkeep
+*.dump
+*.sql
+*.sqlite
+*.sqlite3
+*.db
+*.log
+
+# Evaluation sets containing personal resume text
+eval/resumes/*.txt
+eval/resumes/*.json
+!eval/resumes/.gitkeep
+!eval/resumes/sample_junior_dev.txt
+!eval/resumes/sample_junior_dev.json
+
+# Test artifacts & coverage
+coverage/
+test-results/
+playwright-report/
+blob-report/
+.nyc_output/
+
+# OS & Editor files
+.DS_Store
+Thumbs.db
+*.bak
+*.tmp
+*.swp
+*~
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json

@@ -1,0 +1,20 @@
+sequenceDiagram
+  autonumber
+  participant C as Cron (every 30 min)
+  participant W as Worker
+  participant M as Your mailbox (IMAP)
+  participant DB as PostgreSQL
+  participant L as Ollama
+  C->>W: email.poll
+  W->>M: search allow-listed senders since last run
+  M-->>W: messages
+  W->>DB: skip known Message-IDs
+  alt job alert
+    W->>W: extract job links, create stub Jobs
+    W->>DB: Job needs-description flag
+  else application update
+    W->>L: classify (ack / interview / reject)
+    L-->>W: status + confidence
+    W->>DB: ApplicationEvent source=EMAIL_PARSER
+    W->>DB: suggest status change (you confirm)
+  end

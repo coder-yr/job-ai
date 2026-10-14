@@ -1,0 +1,27 @@
+sequenceDiagram
+  autonumber
+  participant C as pg-boss cron
+  participant W as Worker
+  participant DB as PostgreSQL
+  participant S as Source (ATS API)
+  participant L as Ollama
+  participant UI as Web UI
+  C->>W: discover.run (08:00 IST)
+  W->>DB: create SearchRun RUNNING
+  loop each enabled source
+    W->>S: GET jobs (throttled, UA set)
+    S-->>W: JSON jobs
+    W->>DB: dedupe + insert new Jobs
+  end
+  W->>C: enqueue jobs.process per new Job
+  loop each new job
+    W->>L: extract JD to JSON
+    L-->>W: JobExtract
+    W->>L: embed(description)
+    L-->>W: vector
+    W->>DB: scoreJob() then upsert JobMatch
+  end
+  W->>DB: SearchRun SUCCEEDED + stats
+  W->>DB: Notification "7 new matches"
+  UI->>DB: poll /notifications (or SSE)
+  DB-->>UI: unread badge

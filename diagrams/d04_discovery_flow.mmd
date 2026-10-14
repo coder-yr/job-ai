@@ -1,0 +1,13 @@
+flowchart TD
+  T(["Trigger: cron, manual, catch-up"]) --> S["Load enabled sources + preferences"]
+  S --> I{"Min interval OK?"}
+  I -->|no| SK["Skip source"]
+  I -->|yes| AD["adapter.fetchJobs()<br/>throttled, robots-aware"]
+  AD --> N["Normalise: URL, company, title"]
+  N --> F1{"Early-career?"}
+  F1 -->|no| DROP["Discard + count"]
+  F1 -->|yes| H{"dedupeHash exists?"}
+  H -->|yes| TOUCH["Touch lastSeenAt"]
+  H -->|no| SAVE["Insert Job + enqueue jobs.process"]
+  SAVE --> P["Extract JD, embed, score, judge"]
+  P --> NOTIF(["Notify: N new matches"])

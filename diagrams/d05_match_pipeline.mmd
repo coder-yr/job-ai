@@ -1,0 +1,8 @@
+flowchart TD
+  PF["Profile features<br/>skills, years, roles, locations, embedding"] --> SC
+  JF["Job features<br/>required and preferred skills, years,<br/>title, embedding"] --> SC
+  SC["Deterministic scorer (TypeScript)<br/>Skills 40% - Semantic 20% - Title 15%<br/>Experience 15% - Location 10%"] --> B["Base score 0-100"]
+  B -->|"55 or more and in top 20"| J["LLM judge: adjustment -10..+10<br/>plus plain-English explanation"]
+  B -->|below 55| FIN
+  J --> FIN["Final = base + bounded adjustment"]
+  FIN --> OUT[("JobMatch: score, breakdown,<br/>matched and missing skills")]

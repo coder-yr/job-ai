@@ -1,0 +1,25 @@
+flowchart TB
+  U(["👤 You - single local user"])
+  subgraph PC["YOUR WINDOWS PC - everything below runs locally"]
+    direction LR
+    WEB["Web UI<br/>React + TypeScript"] --> API["API server<br/>Fastify, 127.0.0.1"]
+    API --> DB[("PostgreSQL<br/>+ Prisma")]
+    API --> LLM["Ollama<br/>LLM + embeddings"]
+    WRK["Worker<br/>pg-boss + Playwright"] --> DB
+    WRK --> LLM
+    API --> FS[["Local files<br/>resumes, PDFs"]]
+  end
+  subgraph EXT["OUTSIDE WORLD - read-only, throttled, permitted"]
+    direction LR
+    ATS["Public ATS job APIs<br/>Greenhouse, Lever,<br/>Ashby, SmartRecruiters"]
+    CP["Company career pages<br/>JSON-LD, robots.txt obeyed"]
+    MAIL["Your mailbox (IMAP)<br/>alerts you subscribed to"]
+    PORTALS["LinkedIn / Indeed / Naukri<br/>opened by YOU manually"]
+  end
+  U --> WEB
+  WRK --> ATS
+  WRK --> CP
+  WRK --> MAIL
+  U -.-> PORTALS
+  classDef ext fill:#FEF3C7,stroke:#B45309
+  class ATS,CP,MAIL,PORTALS ext

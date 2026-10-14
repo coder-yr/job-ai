@@ -1,0 +1,1 @@
+{"name":"@jobpilot/worker","version":"1.0.0","type":"module","private":true,"scripts":{"dev":"tsx watch src/worker.ts","start":"tsx src/worker.ts"},"dependencies":{"dotenv":"18.0.7","imapflow":"2.4.0","mailparser":"3.9.38","node-notifier":"11.0.0","pg-boss":"12.37.1","playwright":"1.64.0"}}

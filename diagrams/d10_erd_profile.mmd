@@ -1,0 +1,30 @@
+erDiagram
+  Profile ||--o{ Resume : has
+  Profile ||--o{ Experience : has
+  Profile ||--o{ Project : has
+  Profile ||--o{ ProfileSkill : has
+  Resume ||--o{ ResumeAnalysis : analysed_by
+  Experience ||--o{ Achievement : contains
+  Project ||--o{ Achievement : contains
+  Skill ||--o{ ProfileSkill : used_in
+  Profile {
+    string id PK
+    string fullName
+    string[] targetRoles
+  }
+  Resume {
+    string id PK
+    string sha256
+    json parsed
+    enum parseStatus
+  }
+  Achievement {
+    string id PK
+    string text
+    string[] skillsUsed
+  }
+  Skill {
+    string id PK
+    string name UK
+    string[] aliases
+  }

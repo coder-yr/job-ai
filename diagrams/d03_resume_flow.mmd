@@ -1,0 +1,15 @@
+flowchart TD
+  A["Upload PDF / DOCX"] --> B["Validate type, size, sha256"]
+  B --> C["Extract text: pdfjs-dist / mammoth"]
+  C -->|under 200 chars| OCR["OCR fallback: tesseract.js"]
+  OCR --> D
+  C --> D["LLM structured parse (JSON schema)"]
+  D --> E{"Zod valid?"}
+  E -->|no: retry once| D
+  E -->|still no| R["NEEDS_REVIEW: manual edit form"]
+  E -->|yes| F["Canonicalise skills via alias table"]
+  R --> G
+  F --> G["Store Profile, Experience,<br/>Achievement, Skill rows"]
+  G --> H["ATS rules + LLM critique"]
+  H --> I["Profile embedding"]
+  I --> J(["Resume analysis report"])

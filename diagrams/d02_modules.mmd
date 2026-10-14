@@ -1,0 +1,23 @@
+flowchart TB
+  subgraph apps["apps/"]
+    WEB["web<br/>React UI"]
+    API["api<br/>Fastify routes"]
+    WRK["worker<br/>queues, schedulers"]
+  end
+  subgraph packages["packages/"]
+    SH["shared<br/>zod schemas, types"]
+    CORE["core<br/>llm, resume, sources,<br/>matching, docs, security"]
+    DBP["db<br/>Prisma schema + client"]
+  end
+  WEB --> SH
+  API --> SH
+  API --> CORE
+  API --> DBP
+  WRK --> CORE
+  WRK --> DBP
+  CORE --> SH
+  CORE --> DBP
+  classDef a fill:#E8F0FE,stroke:#1A56DB
+  classDef p fill:#ECFDF5,stroke:#047857
+  class WEB,API,WRK a
+  class SH,CORE,DBP p

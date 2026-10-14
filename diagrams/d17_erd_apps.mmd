@@ -1,0 +1,32 @@
+erDiagram
+  Profile ||--o{ Application : submits
+  Job ||--o{ Application : targeted_by
+  Application ||--o{ ApplicationEvent : logs
+  Application ||--o{ GeneratedDocument : uses
+  Job ||--o{ GeneratedDocument : tailored_for
+  EmailMessage ||--o{ ApplicationEvent : evidence_for
+  Profile ||--o{ EmailMessage : owns
+  Application {
+    string id PK
+    enum status
+    enum method
+    datetime followUpAt
+  }
+  ApplicationEvent {
+    enum fromStatus
+    enum toStatus
+    enum source
+    datetime occurredAt
+  }
+  GeneratedDocument {
+    string id PK
+    enum kind
+    json content
+    json guardReport
+    datetime approvedAt
+  }
+  EmailMessage {
+    string messageIdHdr UK
+    enum classified
+    string snippet
+  }

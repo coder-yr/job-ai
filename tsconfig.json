@@ -1,0 +1,43 @@
+{
+ "compilerOptions": {
+  "target": "ES2023",
+  "module": "NodeNext",
+  "moduleResolution": "NodeNext",
+  "strict": true,
+  "noUncheckedIndexedAccess": true,
+  "skipLibCheck": true,
+  "noEmit": true,
+  "esModuleInterop": true,
+  "types": [
+   "node"
+  ],
+  "baseUrl": ".",
+  "paths": {
+   "@jobpilot/db": [
+    "packages/db/src/client.ts"
+   ],
+   "@jobpilot/shared": [
+    "packages/shared/src/schemas.ts"
+   ],
+   "@jobpilot/core/*": [
+    "packages/core/src/*"
+   ]
+  },
+  "jsx": "react-jsx",
+  "lib": [
+   "ES2023",
+   "DOM"
+  ]
+ },
+ "include": [
+  "packages",
+  "apps",
+  "tests",
+  "e2e",
+  "scripts"
+ ],
+ "exclude": [
+  "node_modules",
+  "packages/db/generated"
+ ]
+}

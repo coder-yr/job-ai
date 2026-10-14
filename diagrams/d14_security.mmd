@@ -1,0 +1,15 @@
+flowchart LR
+  subgraph TB1["Trust boundary: your PC (BitLocker on)"]
+    direction LR
+    BR["Browser<br/>localhost:5173"] -->|"token header,<br/>CORS locked"| API["API<br/>127.0.0.1 only"]
+    API --> DB[("PostgreSQL<br/>localhost only")]
+    API --> OL["Ollama<br/>127.0.0.1:11434"]
+    WK["Worker"] --> DB
+    WK --> OL
+    SEC[["Secrets: .env + AES-GCM<br/>encrypted IMAP password"]]
+  end
+  WK -->|"HTTPS GET only"| NET["Internet:<br/>public job APIs, career pages"]
+  WK -->|"IMAP over TLS"| MB["Your mailbox"]
+  UNTRUSTED["Untrusted text<br/>job descriptions, e-mails"] -.->|"treated as DATA<br/>prompt-injection defences"| OL
+  classDef bad fill:#FEE2E2,stroke:#B91C1C
+  class UNTRUSTED bad

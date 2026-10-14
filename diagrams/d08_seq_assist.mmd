@@ -1,0 +1,18 @@
+sequenceDiagram
+  autonumber
+  actor U as You
+  participant UI as Web UI
+  participant API as API
+  participant A as Assist runner (Playwright, headed)
+  participant ATS as Employer ATS page
+  U->>UI: Click "Assist apply"
+  UI->>API: POST /applications/:id/assist
+  API->>API: allow-list check (never LinkedIn / Indeed / Naukri)
+  API->>A: start with approved resume + facts
+  A->>ATS: open apply URL in visible browser
+  A->>ATS: fill name, email, phone, upload PDF
+  A-->>U: "Review everything, press Submit yourself"
+  U->>ATS: solves CAPTCHA, answers questions, clicks Submit
+  U->>UI: Click "Mark as submitted"
+  UI->>API: PATCH /applications/:id status=SUBMITTED
+  API->>API: write ApplicationEvent + AuditLog

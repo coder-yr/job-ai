@@ -1,0 +1,21 @@
+stateDiagram-v2
+  [*] --> PLANNED: save job
+  PLANNED --> PREPARED: documents approved
+  PREPARED --> SUBMITTED: you submit on employer site
+  SUBMITTED --> ACKNOWLEDGED: confirmation e-mail
+  ACKNOWLEDGED --> SCREENING
+  SCREENING --> ASSESSMENT
+  SCREENING --> INTERVIEW
+  ASSESSMENT --> INTERVIEW
+  INTERVIEW --> OFFER
+  INTERVIEW --> REJECTED
+  SCREENING --> REJECTED
+  SUBMITTED --> GHOSTED: no reply in 21 days
+  ACKNOWLEDGED --> GHOSTED
+  PLANNED --> WITHDRAWN
+  PREPARED --> WITHDRAWN
+  SUBMITTED --> WITHDRAWN
+  OFFER --> [*]
+  REJECTED --> [*]
+  GHOSTED --> [*]
+  WITHDRAWN --> [*]

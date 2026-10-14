@@ -1,0 +1,14 @@
+flowchart TD
+  Q["Want jobs from source X"] --> A{"Official no-auth public<br/>job API or feed?"}
+  A -->|"yes: Greenhouse, Lever, Ashby,<br/>SmartRecruiters, Recruitee"| G["USE adapter<br/>throttle and cache"]
+  A -->|no| B{"Careers page with JSON-LD<br/>AND robots.txt allows?"}
+  B -->|yes| J["USE JSON-LD adapter"]
+  B -->|no| C{"Sends job-alert e-mails<br/>I subscribed to?"}
+  C -->|"yes: LinkedIn, Indeed, Naukri"| E["USE e-mail alert parser<br/>my mailbox, my data"]
+  C -->|no| D{"ToS forbid automation<br/>or unclear?"}
+  D -->|yes| M["MANUAL ONLY<br/>paste URL or JD text"]
+  D -->|"explicitly permitted"| P["Record permission in termsNote,<br/>then write adapter"]
+  classDef ok fill:#ECFDF5,stroke:#047857
+  classDef no fill:#FEE2E2,stroke:#B91C1C
+  class G,J,E,P ok
+  class M no

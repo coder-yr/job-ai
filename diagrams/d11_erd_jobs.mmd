@@ -1,0 +1,30 @@
+erDiagram
+  JobSource ||--o{ Job : provides
+  Company ||--o{ Job : posts
+  SearchRun ||--o{ Job : discovered
+  Job ||--o{ JobSkill : requires
+  Skill ||--o{ JobSkill : referenced_by
+  Job ||--o{ JobMatch : scored_as
+  Profile ||--o{ JobMatch : receives
+  Resume ||--o{ JobMatch : used_for
+  Job {
+    string id PK
+    string dedupeHash UK
+    string canonicalUrl
+    enum seniority
+    int minYears
+    float[] embedding
+  }
+  JobMatch {
+    string id PK
+    int score
+    json breakdown
+    string[] missingSkills
+    enum userState
+  }
+  JobSource {
+    string id PK
+    enum kind
+    json config
+    string termsNote
+  }

@@ -1,0 +1,21 @@
+{
+  "skills": [
+    "JavaScript",
+    "TypeScript",
+    "Python",
+    "SQL",
+    "React",
+    "Express",
+    "Node.js",
+    "Tailwind CSS",
+    "PostgreSQL",
+    "MongoDB",
+    "Redis",
+    "Git",
+    "Docker",
+    "Vitest",
+    "REST API"
+  ],
+  "email": "aarav.sharma@example.com",
+  "education": 1
+}

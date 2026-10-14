@@ -1,0 +1,14 @@
+# docker-compose.yml - OPTIONAL: PostgreSQL only (Docker Desktop is free for personal use).
+# Use this instead of the native installer if you also want pgvector later.
+services:
+  db:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_USER: jobpilot
+      POSTGRES_PASSWORD: choose-a-strong-password
+      POSTGRES_DB: jobpilot
+    ports: ["127.0.0.1:5432:5432"] # bind to loopback only
+    volumes: ["jobpilot-pg:/var/lib/postgresql/data"]
+    restart: unless-stopped
+volumes:
+  jobpilot-pg:

@@ -1,0 +1,26 @@
+Aarav Sharma
+aarav.sharma@example.com | +91 98765 43210 | Pune, India
+github.com/aaravsharma | linkedin.com/in/aaravsharma
+
+Professional Summary
+Passionate junior software engineer with 1 year of hands-on experience in full-stack web development using TypeScript, React, and Node.js.
+
+Skills
+Languages: JavaScript, TypeScript, Python, SQL
+Frameworks: React, Express, Node.js, Tailwind CSS
+Databases: PostgreSQL, MongoDB, Redis
+Tools: Git, Docker, Vitest, REST API
+
+Experience
+Associate Software Engineer | Acme Technologies | Pune, India | 2024-06 to Present
+- Developed modular React components reducing bundle size by 15%
+- Built RESTful APIs using Express and Node.js serving 500 daily users
+- Designed relational database schemas in PostgreSQL with Prisma ORM
+
+Projects
+TaskPilot Web App | 2024
+- Engineered a task management dashboard with React, TypeScript, and Tailwind CSS
+- Integrated real-time notifications with WebSockets
+
+Education
+Bachelor of Engineering in Computer Science | Pune University | 2020 - 2024 | CGPA: 8.5/10

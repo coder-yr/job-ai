@@ -1,0 +1,223 @@
+{
+  "profile": {
+    "targetRoles": [
+      "Software Engineer",
+      "Full Stack Developer",
+      "Backend Developer",
+      "Junior Software Developer"
+    ],
+    "skills": [
+      "typescript",
+      "javascript",
+      "node.js",
+      "react",
+      "postgresql",
+      "rest api",
+      "git",
+      "docker"
+    ],
+    "yearsExperience": 1,
+    "locations": [
+      "bengaluru",
+      "remote"
+    ],
+    "acceptsRemote": true
+  },
+  "jobs": [
+    {
+      "id": "job-01",
+      "title": "Junior Full Stack Developer",
+      "company": "Acme Corp",
+      "seniority": "JUNIOR",
+      "workMode": "REMOTE",
+      "location": "Remote",
+      "minYears": 0,
+      "maxYears": 2,
+      "requiredSkills": ["typescript", "react", "node.js"],
+      "preferredSkills": ["postgresql", "docker"],
+      "relevant": true
+    },
+    {
+      "id": "job-02",
+      "title": "Associate Software Engineer",
+      "company": "TechScale Labs",
+      "seniority": "FRESHER",
+      "workMode": "REMOTE",
+      "location": "Bengaluru",
+      "minYears": 0,
+      "maxYears": 1,
+      "requiredSkills": ["javascript", "node.js", "git"],
+      "preferredSkills": ["typescript", "react"],
+      "relevant": true
+    },
+    {
+      "id": "job-03",
+      "title": "Junior Backend Engineer",
+      "company": "CloudNative Solutions",
+      "seniority": "JUNIOR",
+      "workMode": "HYBRID",
+      "location": "Bengaluru",
+      "minYears": 1,
+      "maxYears": 2,
+      "requiredSkills": ["node.js", "typescript", "postgresql"],
+      "preferredSkills": ["rest api", "docker"],
+      "relevant": true
+    },
+    {
+      "id": "job-04",
+      "title": "Software Engineer - Early Career",
+      "company": "Nexus Media",
+      "seniority": "JUNIOR",
+      "workMode": "REMOTE",
+      "location": "Remote",
+      "minYears": 1,
+      "maxYears": 2,
+      "requiredSkills": ["react", "typescript", "rest api"],
+      "preferredSkills": ["git"],
+      "relevant": true
+    },
+    {
+      "id": "job-05",
+      "title": "Full Stack Developer",
+      "company": "Innovate IO",
+      "seniority": "JUNIOR",
+      "workMode": "REMOTE",
+      "location": "Remote",
+      "minYears": 1,
+      "maxYears": 3,
+      "requiredSkills": ["react", "node.js", "postgresql"],
+      "preferredSkills": ["typescript", "docker"],
+      "relevant": true
+    },
+    {
+      "id": "job-06",
+      "title": "Backend Software Developer (Node/TS)",
+      "company": "StreamFast",
+      "seniority": "JUNIOR",
+      "workMode": "REMOTE",
+      "location": "Remote",
+      "minYears": 0,
+      "maxYears": 2,
+      "requiredSkills": ["node.js", "typescript", "git"],
+      "preferredSkills": ["postgresql"],
+      "relevant": true
+    },
+    {
+      "id": "job-07",
+      "title": "Junior Frontend & Web Engineer",
+      "company": "PixelCraft",
+      "seniority": "JUNIOR",
+      "workMode": "HYBRID",
+      "location": "Bengaluru",
+      "minYears": 0,
+      "maxYears": 1,
+      "requiredSkills": ["react", "javascript", "git"],
+      "preferredSkills": ["typescript"],
+      "relevant": true
+    },
+    {
+      "id": "job-08",
+      "title": "Graduate Trainee Software Engineer",
+      "company": "Global Systems",
+      "seniority": "FRESHER",
+      "workMode": "ONSITE",
+      "location": "Bengaluru",
+      "minYears": 0,
+      "maxYears": 1,
+      "requiredSkills": ["javascript", "rest api", "git"],
+      "preferredSkills": ["sql"],
+      "relevant": true
+    },
+    {
+      "id": "job-09",
+      "title": "Junior Node.js Developer",
+      "company": "API Works",
+      "seniority": "JUNIOR",
+      "workMode": "REMOTE",
+      "location": "Remote",
+      "minYears": 1,
+      "maxYears": 2,
+      "requiredSkills": ["node.js", "postgresql", "rest api"],
+      "preferredSkills": ["docker", "typescript"],
+      "relevant": true
+    },
+    {
+      "id": "job-10",
+      "title": "Full Stack Engineer (React & Node)",
+      "company": "Launchpad Systems",
+      "seniority": "JUNIOR",
+      "workMode": "REMOTE",
+      "location": "Remote",
+      "minYears": 1,
+      "maxYears": 2,
+      "requiredSkills": ["react", "node.js", "typescript"],
+      "preferredSkills": ["git"],
+      "relevant": true
+    },
+    {
+      "id": "job-11",
+      "title": "Staff Infrastructure Architect",
+      "company": "Enterprise Cloud Corp",
+      "seniority": "SENIOR",
+      "workMode": "ONSITE",
+      "location": "New York",
+      "minYears": 12,
+      "maxYears": 15,
+      "requiredSkills": ["c++", "distributed systems", "kernel", "assembly"],
+      "preferredSkills": ["distributed consensus"],
+      "relevant": false
+    },
+    {
+      "id": "job-12",
+      "title": "Vice President of Engineering",
+      "company": "FinTech Corp",
+      "seniority": "SENIOR",
+      "workMode": "ONSITE",
+      "location": "London",
+      "minYears": 15,
+      "maxYears": 20,
+      "requiredSkills": ["executive management", "budgeting", "hiring"],
+      "preferredSkills": ["compliance"],
+      "relevant": false
+    },
+    {
+      "id": "job-13",
+      "title": "Senior Principal Machine Learning Scientist",
+      "company": "DeepResearch Labs",
+      "seniority": "SENIOR",
+      "workMode": "ONSITE",
+      "location": "San Francisco",
+      "minYears": 8,
+      "maxYears": 12,
+      "requiredSkills": ["pytorch", "cuda", "quantum computing", "applied mathematics"],
+      "preferredSkills": ["c++"],
+      "relevant": false
+    },
+    {
+      "id": "job-14",
+      "title": "Registered ICU Nurse",
+      "company": "City Hospital",
+      "seniority": "MID",
+      "workMode": "ONSITE",
+      "location": "Chicago",
+      "minYears": 3,
+      "maxYears": 5,
+      "requiredSkills": ["patient care", "nursing", "icu", "bls certification"],
+      "preferredSkills": ["triage"],
+      "relevant": false
+    },
+    {
+      "id": "job-15",
+      "title": "Director of Commercial Real Estate",
+      "company": "Realty Partners",
+      "seniority": "SENIOR",
+      "workMode": "ONSITE",
+      "location": "Dubai",
+      "minYears": 10,
+      "maxYears": 15,
+      "requiredSkills": ["commercial leasing", "tenant negotiations", "real estate finance"],
+      "preferredSkills": ["crm"],
+      "relevant": false
+    }
+  ]
+}

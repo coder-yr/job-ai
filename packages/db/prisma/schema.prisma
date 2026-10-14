@@ -1,0 +1,540 @@
+// prisma/schema.prisma  -  JobPilot AI  (Prisma ORM 7, PostgreSQL 16/17)
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ───────────────────────────── Enums ─────────────────────────────
+enum ParseStatus {
+  PENDING
+  PARSED
+  NEEDS_REVIEW
+  FAILED
+}
+enum SkillLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+enum SkillSource {
+  RESUME
+  MANUAL
+  INFERRED
+}
+enum WorkMode {
+  ONSITE
+  HYBRID
+  REMOTE
+  UNKNOWN
+}
+enum JobType {
+  FULL_TIME
+  INTERNSHIP
+  CONTRACT
+  PART_TIME
+  UNKNOWN
+}
+enum Seniority {
+  INTERN
+  FRESHER
+  JUNIOR
+  MID
+  SENIOR
+  UNKNOWN
+}
+enum JobStatus {
+  ACTIVE
+  STALE
+  CLOSED
+}
+enum SourceKind {
+  EMAIL_ALERT
+  ATS_GREENHOUSE
+  ATS_LEVER
+  ATS_ASHBY
+  ATS_SMARTRECRUITERS
+  PUBLIC_API
+  CAREER_PAGE_JSONLD
+  RSS
+  MANUAL
+}
+enum RunTrigger {
+  SCHEDULED
+  MANUAL
+  CATCHUP
+}
+enum RunStatus {
+  QUEUED
+  RUNNING
+  SUCCEEDED
+  PARTIAL
+  FAILED
+  CANCELLED
+}
+enum UserJobState {
+  NEW
+  SAVED
+  HIDDEN
+  APPLIED
+}
+enum DocKind {
+  TAILORED_RESUME
+  COVER_LETTER
+  ANSWER_SET
+}
+enum DocFormat {
+  PDF
+  DOCX
+  MD
+  JSON
+}
+enum ApplicationStatus {
+  PLANNED
+  PREPARED
+  SUBMITTED
+  ACKNOWLEDGED
+  SCREENING
+  INTERVIEW
+  ASSESSMENT
+  OFFER
+  REJECTED
+  WITHDRAWN
+  GHOSTED
+}
+enum ApplyMethod {
+  MANUAL_PORTAL
+  ASSISTED_ATS
+  EMAIL
+  REFERRAL
+}
+enum EventSource {
+  USER
+  EMAIL_PARSER
+  SYSTEM
+}
+enum EmailClass {
+  JOB_ALERT
+  APPLICATION_UPDATE
+  OTHER
+}
+
+// ───────────────────────────── Profile domain ─────────────────────────────
+model Profile {
+  id              String   @id @default(cuid())
+  fullName        String
+  email           String?
+  phone           String?
+  location        String?
+  headline        String?
+  summary         String?
+  links           Json     @default("{}")      // { github, linkedin, portfolio }
+  targetRoles     String[]
+  yearsExperience Float    @default(0)
+  acceptsRemote   Boolean  @default(true)
+  preferredCities String[]                      // lower-case
+  embedding       Float[]                       // profile embedding (see ProfileEmbedding note)
+  embeddingModel  String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  resumes         Resume[]
+  experiences     Experience[]
+  projects        Project[]
+  educations      Education[]
+  certifications  Certification[]
+  skills          ProfileSkill[]
+  preferences     SearchPreference[]
+  matches         JobMatch[]
+  documents       GeneratedDocument[]
+  applications    Application[]
+  emails          EmailMessage[]
+}
+
+model Resume {
+  id            String      @id @default(cuid())
+  profileId     String
+  label         String
+  originalName  String
+  mimeType      String
+  storagePath   String                        // relative to DATA_DIR
+  sha256        String
+  rawText       String
+  parsed        Json?                          // validated ParsedResume
+  parseStatus   ParseStatus @default(PENDING)
+  parserModel   String?
+  isPrimary     Boolean     @default(false)
+  createdAt     DateTime    @default(now())
+
+  profile       Profile     @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  analyses      ResumeAnalysis[]
+  matches       JobMatch[]
+
+  @@unique([profileId, sha256])
+  @@index([profileId, isPrimary])
+}
+
+model ResumeAnalysis {
+  id            String   @id @default(cuid())
+  resumeId      String
+  atsScore      Int                              // 0-100, rule based
+  sectionScores Json                             // { contact, summary, skills, ... }
+  strengths     String[]
+  weaknesses    String[]
+  suggestions   Json                             // [{ section, issue, fix, priority }]
+  model         String
+  promptVersion String
+  createdAt     DateTime @default(now())
+
+  resume        Resume   @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  @@index([resumeId, createdAt])
+}
+
+model Experience {
+  id          String        @id @default(cuid())
+  profileId   String
+  company     String
+  title       String
+  location    String?
+  startDate   DateTime?
+  endDate     DateTime?
+  isCurrent   Boolean       @default(false)
+  sortOrder   Int           @default(0)
+
+  profile     Profile       @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  achievements Achievement[]
+  @@index([profileId, sortOrder])
+}
+
+model Project {
+  id          String        @id @default(cuid())
+  profileId   String
+  name        String
+  url         String?
+  description String?
+  techStack   String[]
+  sortOrder   Int           @default(0)
+
+  profile     Profile       @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  achievements Achievement[]
+  @@index([profileId, sortOrder])
+}
+
+// A single resume bullet. Stable IDs enable provenance for tailored resumes.
+model Achievement {
+  id           String      @id @default(cuid())
+  text         String
+  skillsUsed   String[]
+  sortOrder    Int         @default(0)
+  experienceId String?
+  projectId    String?
+
+  experience   Experience? @relation(fields: [experienceId], references: [id], onDelete: Cascade)
+  project      Project?    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  @@index([experienceId])
+  @@index([projectId])
+}
+
+model Education {
+  id          String   @id @default(cuid())
+  profileId   String
+  institution String
+  degree      String
+  field       String?
+  startYear   Int?
+  endYear     Int?
+  grade       String?
+  profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  @@index([profileId])
+}
+
+model Certification {
+  id        String    @id @default(cuid())
+  profileId String
+  name      String
+  issuer    String?
+  issuedAt  DateTime?
+  url       String?
+  profile   Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  @@index([profileId])
+}
+
+model Skill {
+  id        String   @id @default(cuid())
+  name      String   @unique                 // canonical, lower-case: "typescript"
+  display   String                            // "TypeScript"
+  category  String?                           // language | framework | db | tool | soft
+  aliases   String[]                          // ["ts", "type script"]
+
+  profiles  ProfileSkill[]
+  jobs      JobSkill[]
+}
+
+model ProfileSkill {
+  profileId String
+  skillId   String
+  level     SkillLevel  @default(INTERMEDIATE)
+  years     Float?
+  source    SkillSource @default(RESUME)
+
+  profile   Profile     @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  skill     Skill       @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  @@id([profileId, skillId])
+}
+
+// ───────────────────────────── Discovery domain ─────────────────────────────
+model SearchPreference {
+  id               String    @id @default(cuid())
+  profileId        String
+  name             String
+  keywords         String[]
+  excludeKeywords  String[]
+  locations        String[]
+  workModes        WorkMode[]
+  jobTypes         JobType[]
+  minYears         Int       @default(0)
+  maxYears         Int       @default(2)
+  minSalaryInr     Int?
+  enabled          Boolean   @default(true)
+  profile          Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  @@index([profileId, enabled])
+}
+
+model JobSource {
+  id            String     @id @default(cuid())
+  kind          SourceKind
+  name          String
+  config        Json       @default("{}")    // e.g. { "boardToken": "acme" }
+  enabled       Boolean    @default(true)
+  minIntervalMin Int       @default(360)
+  robotsChecked DateTime?
+  termsNote     String?                       // human note about why this is permitted
+  lastRunAt     DateTime?
+  createdAt     DateTime   @default(now())
+
+  jobs          Job[]
+  @@unique([kind, name])
+}
+
+model Company {
+  id             String   @id @default(cuid())
+  name           String
+  normalizedName String   @unique
+  website        String?
+  careersUrl     String?
+  atsKind        SourceKind?
+  atsToken       String?
+  notes          String?
+  createdAt      DateTime @default(now())
+  jobs           Job[]
+}
+
+model SearchRun {
+  id          String     @id @default(cuid())
+  trigger     RunTrigger
+  status      RunStatus  @default(QUEUED)
+  startedAt   DateTime?
+  finishedAt  DateTime?
+  stats       Json       @default("{}")       // { fetched, new, dupes, scored, errors }
+  error       String?
+  createdAt   DateTime   @default(now())
+  jobs        Job[]
+  @@index([createdAt])
+}
+
+model Job {
+  id              String     @id @default(cuid())
+  sourceId        String
+  companyId       String
+  searchRunId     String?
+  externalId      String?
+  title           String
+  normalizedTitle String
+  descriptionText String
+  descriptionHtml String?
+  location        String?
+  workMode        WorkMode   @default(UNKNOWN)
+  jobType         JobType    @default(UNKNOWN)
+  seniority       Seniority  @default(UNKNOWN)
+  minYears        Int?
+  maxYears        Int?
+  salaryMin       Int?
+  salaryMax       Int?
+  currency        String?
+  postedAt        DateTime?
+  applyUrl        String
+  canonicalUrl    String
+  dedupeHash      String     @unique
+  status          JobStatus  @default(ACTIVE)
+  firstSeenAt     DateTime   @default(now())
+  lastSeenAt      DateTime   @default(now())
+  extracted       Json?                         // LLM-normalised JD (validated)
+  embedding       Float[]
+  embeddingModel  String?
+
+  source          JobSource  @relation(fields: [sourceId], references: [id])
+  company         Company    @relation(fields: [companyId], references: [id])
+  searchRun       SearchRun? @relation(fields: [searchRunId], references: [id])
+  skills          JobSkill[]
+  matches         JobMatch[]
+  applications    Application[]
+  documents       GeneratedDocument[]
+
+  @@unique([sourceId, externalId])
+  @@index([status, postedAt])
+  @@index([companyId])
+}
+
+model JobSkill {
+  jobId      String
+  skillId    String
+  required   Boolean @default(true)
+  job        Job     @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  skill      Skill   @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  @@id([jobId, skillId])
+}
+
+model JobMatch {
+  id             String       @id @default(cuid())
+  profileId      String
+  jobId          String
+  resumeId       String
+  score          Int                              // 0-100 final
+  breakdown      Json                             // per-dimension scores + weights
+  matchedSkills  String[]
+  missingSkills  String[]
+  llmAdjustment  Int          @default(0)         // -10..+10, bounded
+  explanation    String?
+  scoringVersion String
+  userState      UserJobState @default(NEW)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  profile        Profile      @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  job            Job          @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  resume         Resume       @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@unique([profileId, jobId])
+  @@index([profileId, userState, score])
+}
+
+// ───────────────────────────── Application domain ─────────────────────────────
+model GeneratedDocument {
+  id            String      @id @default(cuid())
+  profileId     String
+  jobId         String?
+  applicationId String?
+  kind          DocKind
+  format        DocFormat
+  content       Json                              // structured source of truth
+  filePath      String?
+  basedOnResumeId String?
+  model         String
+  promptVersion String
+  guardReport   Json                              // truthfulness-guard result
+  approvedAt    DateTime?                         // human approval gate
+  createdAt     DateTime    @default(now())
+
+  profile       Profile      @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  job           Job?         @relation(fields: [jobId], references: [id], onDelete: SetNull)
+  application   Application? @relation(fields: [applicationId], references: [id], onDelete: SetNull)
+  @@index([jobId, kind])
+}
+
+model Application {
+  id            String            @id @default(cuid())
+  profileId     String
+  jobId         String
+  status        ApplicationStatus @default(PLANNED)
+  method        ApplyMethod       @default(MANUAL_PORTAL)
+  appliedAt     DateTime?
+  followUpAt    DateTime?
+  notes         String?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  profile       Profile           @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  job           Job               @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  events        ApplicationEvent[]
+  documents     GeneratedDocument[]
+
+  @@unique([profileId, jobId])
+  @@index([status, followUpAt])
+}
+
+model ApplicationEvent {
+  id             String            @id @default(cuid())
+  applicationId  String
+  fromStatus     ApplicationStatus?
+  toStatus       ApplicationStatus
+  source         EventSource       @default(USER)
+  note           String?
+  emailMessageId String?
+  occurredAt     DateTime          @default(now())
+
+  application    Application       @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  email          EmailMessage?     @relation(fields: [emailMessageId], references: [id], onDelete: SetNull)
+  @@index([applicationId, occurredAt])
+}
+
+model EmailMessage {
+  id            String     @id @default(cuid())
+  profileId     String
+  messageIdHdr  String     @unique
+  fromAddr      String
+  subject       String
+  receivedAt    DateTime
+  snippet       String                           // max ~2 KB, never full body
+  classified    EmailClass @default(OTHER)
+  parsed        Json?
+  processedAt   DateTime?
+
+  profile       Profile    @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  events        ApplicationEvent[]
+  @@index([profileId, receivedAt])
+}
+
+// ───────────────────────────── System domain ─────────────────────────────
+model Notification {
+  id        String    @id @default(cuid())
+  kind      String                                // new_matches | followup_due | run_failed
+  title     String
+  body      String
+  refType   String?
+  refId     String?
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+  @@index([readAt, createdAt])
+}
+
+model AppSetting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+}
+
+model LlmCall {
+  id            String   @id @default(cuid())
+  purpose       String                            // resume_parse | jd_extract | tailor | ...
+  model         String
+  promptVersion String
+  durationMs    Int
+  success       Boolean
+  error         String?
+  createdAt     DateTime @default(now())
+  @@index([purpose, createdAt])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  actor     String                                // user | system | worker
+  action    String                                // e.g. application.status_changed
+  entity    String
+  entityId  String?
+  meta      Json     @default("{}")
+  at        DateTime @default(now())
+  @@index([entity, entityId])
+}
