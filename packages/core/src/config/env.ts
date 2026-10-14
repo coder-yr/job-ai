@@ -21,7 +21,7 @@ const EnvSchema = z.object({
   OLLAMA_HOST: z.string().url().default("http://127.0.0.1:11434"),
   OLLAMA_CHAT_MODEL: z.string().default("qwen2.5:7b-instruct"),
   OLLAMA_EMBED_MODEL: z.string().default("nomic-embed-text"),
-  DATA_DIR: z.string().min(1),
+  DATA_DIR: z.string().default(() => (process.env.LOCALAPPDATA ? `${process.env.LOCALAPPDATA.replace(/\\/g, "/")}/JobPilot` : "./data")),
   TZ_DEFAULT: z.string().default("Asia/Kolkata"),
 });
 export type Env = z.infer<typeof EnvSchema>;
